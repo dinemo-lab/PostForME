@@ -8,6 +8,7 @@ import {
   RefreshCw,
   AlertCircle,
   CheckCircle,
+  Globe,
 } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_LOCAL_URL;
@@ -18,6 +19,7 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
   const [charCount, setCharCount] = useState(0);
+  const [language, setLanguage] = useState("english"); // Default language
 
   const generateTweet = async () => {
     if (!topic.trim()) {
@@ -27,7 +29,10 @@ function App() {
 
     try {
       setIsGenerating(true);
-      const response = await axios.post(`${API_URL}/generate-tweet`, { topic });
+      const response = await axios.post(`${API_URL}/generate-tweet`, { 
+        topic,
+        language // Send language preference to backend
+      });
       setGeneratedTweet(response.data.tweet);
       setCharCount(response.data.tweet.length);
       toast.success("Tweet generated successfully!");
@@ -141,6 +146,27 @@ function App() {
                     </button>
                   )}
                 </div>
+              </div>
+
+              {/* Language Selection Dropdown */}
+              <div className="mb-6">
+                <label
+                  htmlFor="language"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center"
+                >
+                  <Globe className="h-4 w-4 mr-1 text-blue-500" />
+                  Select Tweet Language
+                </label>
+                <select
+                  id="language"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                >
+                  <option value="english">English</option>
+                  <option value="hindi">Hindi</option>
+                  <option value="hinglish">Hinglish</option>
+                </select>
               </div>
 
               <button
@@ -289,7 +315,7 @@ function App() {
               <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 flex items-center justify-center mb-4">
                 <CheckCircle className="h-6 w-6 text-blue-500 mr-2" />
                 <span className="text-blue-700 dark:text-blue-300 font-medium">
-                  Focused on tweet posting only
+                  Generate tweets in English, Hindi, or Hinglish!
                 </span>
               </div>
 
